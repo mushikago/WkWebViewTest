@@ -1,290 +1,49 @@
 <!DOCTYPE html>
-<html>
-<head>
-    <title>Kagami CreateJS</title>
-    <meta charset="UTF-8">
-    <meta name="description" content="">
-    <meta name="keywords" content="">
-    <script src="https://code.createjs.com/easeljs-0.8.1.min.js"></script>
-    <script src="https://code.createjs.com/preloadjs-0.3.0.min.js"></script>
-    <script>
-        var stage;
-        var canvasElement;
-        var canvasWidth;
-        var canvasHeight;
-        var ObjA;
-        var ObjB;
-        var ObjC;
-        var Human;
-        var Kagami;
-        var Lines = [];
-        var Points = [];
-        
-        var KagamiH = 20;
-        var KagamiW = 300;
-        var KagamiX = 250;
-        var PointA = {x:KagamiX,y:KagamiH};
-        var PointB = {x:KagamiX + KagamiW,y:KagamiH};
-        var PointC = {x:0,y:0};
-        var PointAA = {x:0,y:400};
-        var PointBB = {x:800,y:400};
-        
-        var mirrorViewBefore;
-        var mirrorViewAfter;
-        
-        var images = images||{};
-        var test;
-        
-        var manifest = [
-            {src: "images/Kagami/ObjA.png", id: "ObjA"},
-            {src: "images/Kagami/ObjB.png", id: "ObjB"},
-            {src: "images/Kagami/ObjC.png", id: "ObjC"},
-            {src: "images/Kagami/Human.png", id: "Human"}
-        ];
-        
-        function initialize(){
-            canvasElement = document.getElementById("myCanvas");
-            stage = new createjs.Stage(canvasElement);
-            createjs.Touch.enable(stage);
-            test = document.getElementById("test");
-            test.textContent =  "createjs.Touch.isSupported()=" + createjs.Touch.isSupported();
-            canvasWidth = canvasElement.width;
-            canvasHeight = canvasElement.height;
-            var loader = new createjs.LoadQueue(false);
-            loader.addEventListener("fileload", fileload);
-            loader.addEventListener("complete", placeBitmap);
-            loader.loadManifest(manifest);
-            
-            mirrorViewBefore = new createjs.Shape();
-			stage.addChild(mirrorViewBefore)
-            mirrorViewAfter = new createjs.Shape();
-			stage.addChild(mirrorViewAfter)
-            
-			Kagami = new createjs.Shape();
-			stage.addChild(Kagami)
-            Kagami.x = 0;
-            Kagami.y = 0;
-			draw(Kagami);
-            
-            
-            
-            
-//            Lines["Line1"].startP = PointC
-//            Lines["Line1"].endP = PointA
-//            Lines["Line2"].startP = PointC
-//            Lines["Line2"].endP = PointB
-//            Lines["Line3"].startP = PointC
-//            Lines["Line3"].endP = PointA
-//            Lines["Line4"].startP = PointC
-//            Lines["Line4"].endP = PointA
-            
-            
-            
-//			//drawG(myShape.graphics);
-//            createjs.Ticker.addEventListener("tick",tick);
-            
-            
-        }
-        
-        function initLinesAndPoints(){
-            for (var i=0; i<4; i++){
-                var _line = new createjs.Shape();
-                Lines.push(_line);
-                stage.addChild(_line);
-            }
-            
-            Points[0] = {startP:PointC, endP:PointA};
-            Points[1] = {startP:PointC, endP:PointB};
-            Points[2] = {startP:PointA, endP:PointAA};
-            Points[3] = {startP:PointB, endP:PointBB};
-        }
-        
-        
-        function fileload(event) {
-          if (event.item.type == "image") {
-            images[event.item.id] = event.result;
-          }
-        }
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
 
-        function draw(_shape){
-            _shape.graphics
-                .beginStroke("#0000FF")
-                .beginFill("#00FFFF")
-                .moveTo(PointA.x,0)
-                .lineTo(PointB.x,0)
-                .lineTo(PointB.x,PointB.y)
-                .lineTo(PointA.x,PointB.y)
-                .closePath();
-            stage.update();
-        }
-        
-        function drawLine(_num){
-            Lines[_num].graphics
-                .clear()
-                .beginStroke("#FF0000")
-                .moveTo(Points[_num].startP.x,Points[_num].startP.y)
-                .lineTo(Points[_num].endP.x,Points[_num].endP.y)
-                .endStroke()
-//                .moveTo(0,0)
-//                .lineTo(100,100);
-            
-            mirrorViewBefore.graphics
-                .clear()
-                .beginFill("#FFFF77")
-                .moveTo(PointC.x,PointC.y)
-                .lineTo(PointA.x,PointA.y)
-                .lineTo(PointB.x,PointB.y)
-                .closePath();
-            
-            mirrorViewAfter.graphics
-                .clear()
-                .beginFill("#FFFF77")
-                .moveTo(PointA.x,PointA.y)
-                .lineTo(PointB.x,PointB.y)
-                .lineTo(PointBB.x,PointBB.y)
-                .lineTo(PointAA.x,PointAA.y)
-                .closePath();
-            
-            stage.update();
-        }
-        
-        function placeBitmap(){
-            initLinesAndPoints();
-            
-            ObjA = new createjs.Bitmap(images["ObjA"]);
-            ObjB = new createjs.Bitmap(images["ObjB"]);
-            ObjC = new createjs.Bitmap(images["ObjC"]);
-            Human = new createjs.Bitmap(images["Human"]);
-            
-            ObjA.x = canvasWidth/4 *  0.5;
-            ObjB.x = canvasWidth/4 * 2;
-            ObjC.x = canvasWidth/4 * 3.5;
-            ObjA.regX = ObjB.regX = ObjC.regX = 64;
-            ObjA.regY = ObjB.regY = ObjC.regY = 64;
-            ObjA.scaleX = 
-            ObjA.scaleY = 
-            ObjB.scaleX = 
-            ObjB.scaleY = 
-            ObjC.scaleX = 
-            ObjC.scaleY = 
-                0.5;
-            ObjA.y = ObjB.y = ObjC.y = 350;
-//              myBitmap.y = 100;
-            
-            PointC.x = canvasWidth/4 * 2;
-            PointC.y = canvasHeight/2;
-            
-            Human.regX = 64;
-            Human.regY = 112;
-            Human.x = PointC.x;
-            Human.y = PointC.y;
-            stage.addChild(ObjA);
-            stage.addChild(ObjB);
-            stage.addChild(ObjC);
-            stage.addChild(Human);
-            
-            
-//            createjs.Ticker.addEventListener("tick",tick);
-            Human.addEventListener("mousedown", startDrag);
-            stage.addEventListener("mousedown", stageClick);
-            pointUpdateAndDraw()
-            
-            stage.update()
-            
-//            alert(Human.regY);
-        }
-        
-        function stageClick(e){
-            test.textContent = e;
-        }
-        
-        
-        function startDrag(eventObject) {
-            test.textContent = eventObject;
-            var instance = eventObject.target;
-            // eventObject.addEventListener("mousemove", drag);
-            instance.addEventListener("pressmove", drag);
-            // eventObject.addEventListener("mouseup", stopDrag);
-            instance.addEventListener("pressup", stopDrag);
-            // instance.dispatcher = eventObject;
-            instance.offset = new createjs.Point(instance.x - eventObject.stageX, instance.y - eventObject.stageY);
-        }
-        function drag(eventObject) {
-            var instance = eventObject.target;
-            var offset = instance.offset;
-            instance.x = eventObject.stageX + offset.x;
-            instance.y = eventObject.stageY + offset.y;
-                    pointUpdateAndDraw();
-        }
-        function stopDrag(eventObject) {
-            // var dispatcher = eventObject.target.dispatcher;
-            var instance = eventObject.target;
-            // dispatcher.removeEventListener("mousemove", drag);
-            instance.removeEventListener("pressmove", drag);
-            // dispatcher.removeEventListener("mouseup", stopDrag);
-            instance.removeEventListener("pressup", stopDrag);
-        }
-        
-        function pointUpdateAndDraw(){
-            PointC.x = Human.x;
-            PointC.y = Human.y;
-            
-            
-//            //左
-//            var radianA = getRadian(PointA.x, PointA.y, Human.x, Human.y);
-//            var degreeA = radianA * 180 / Math.PI
-//            var radianAA = (degreeA - 270) * Math.PI / 180;
-//            PointAA.x = Math.cos(radianAA) * 500 + PointA.x;
-//            PointAA.y = Math.sin(radianAA) * 500 + PointA.y;
-//            
-//            //右
-//            var radianB = getRadian(PointB.x, PointB.y, Human.x, Human.y);
-//            var degreeB = radianB * 180 / Math.PI
-//            var radianBB = (degreeB - 270) * Math.PI / 180;
-//            PointBB.x = Math.cos(radianBB) * 500 + PointB.x;
-//            PointBB.y = Math.sin(radianBB) * 500 + PointB.y;
-            
-            getMirrorPoint(PointA, PointAA);
-            getMirrorPoint(PointB, PointBB);
-            
-            drawLine(0);
-            drawLine(1);
-            drawLine(2);
-            drawLine(3);
-        }
-        
-        
-        function tick(){
-            stage.update();
-        }
-        
-        
-        function getRadian(x, y, x2, y2) {
-            var radian = Math.atan2( x2 - x,y2 - y);
-            return radian;
-        }
-        
-        function getDistance(x, y, x2, y2) {
-            var distance = Math.sqrt((x2 - x) * (x2 - x) + (y2 - y) * (y2 - y));
-            return distance;
-        }
-        
-        function getMirrorPoint(_mirrorPoint, _target){
-            var _radian = getRadian(_mirrorPoint.x, _mirrorPoint.y, Human.x, Human.y);
-            var _degree = _radian * 180 / Math.PI
-            var _newRadian = (_degree - 270) * Math.PI / 180;
-            _target.x = Math.cos(_newRadian) * 2000 + _mirrorPoint.x;
-            _target.y = Math.sin(_newRadian) * 2000 + _mirrorPoint.y;
-        }
-        
-    </script>
-    <style type="text/css">
-        canvas {border: 1px solid black;}
-    </style>
-</head>
-<body onload="initialize()">
-    <div id="test"></div>
-<canvas id="myCanvas" width="800" height="400"></canvas>
-    <form><button>aaa</button></form>
-</body>
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+     KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+-->
+<html>
+    <head>
+        <!--
+        Customize this policy to fit your own app's needs. For more guidance, see:
+            https://github.com/apache/cordova-plugin-whitelist/blob/master/README.md#content-security-policy
+        Some notes:
+            * gap: is required only on iOS (when using UIWebView) and is needed for JS->native communication
+            * https://ssl.gstatic.com is required only on Android and is needed for TalkBack to function properly
+            * Disables use of inline scripts in order to mitigate risk of XSS vulnerabilities. To change this:
+                * Enable inline JS: add 'unsafe-inline' to default-src
+        -->
+        <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *">
+        <meta name="format-detection" content="telephone=no">
+        <meta name="msapplication-tap-highlight" content="no">
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+        <link rel="stylesheet" type="text/css" href="css/index.css">
+        <title>Hello World</title>
+    </head>
+    <body>
+        <div class="app">
+            <h1>Apache Cordova</h1>
+            <div id="deviceready" class="blink">
+                <p class="event listening">Connecting to Device</p>
+                <p class="event received">Device is Ready</p>
+            </div>
+        </div>
+        <script type="text/javascript" src="cordova.js"></script>
+        <script type="text/javascript" src="js/index.js"></script>
+    </body>
 </html>
